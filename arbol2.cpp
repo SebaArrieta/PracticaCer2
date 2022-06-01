@@ -1,12 +1,14 @@
 #include <iostream>
 
+#include <iostream>
+
 using namespace std;
 typedef int tElem;
 
 struct tNodo{
     tElem info;
-    int contador = 0;
-    int contadorMenor = 0;
+    int contador;
+    int contadorMenor;
     tNodo* izq;
     tNodo* der;
 };
@@ -20,6 +22,7 @@ class RankedABB{
         tNodo *getRoot();
         bool find(tElem x,tNodo *&tNodo);
         bool find(tElem x);
+        int rank(tElem x);
         int rank(tElem x,tNodo *tNodo);
         int setContador(tNodo *nodo);
         void setContadorMenor(tNodo *nodo);
@@ -59,6 +62,8 @@ tNodo* RankedABB::nuevoNodo(tElem x){
     nodo->der = NULL;
     nodo->izq = NULL;
     nodo->info = x;
+    nodo->contador = 0;
+    nodo->contadorMenor = 0;
     numEle++;
     return nodo;
 }
@@ -133,24 +138,31 @@ bool RankedABB::find(tElem x,tNodo *&nodo){
     return false;
 }
 
-int RankedABB::rank(tElem x,tNodo *nodo){ // in order
+int RankedABB::rank(tElem x){
+    return rank(x,raiz);
+}
+
+int RankedABB::rank(tElem x,tNodo *nodo){
     if(nodo != NULL){   
         if(x > nodo->info){
             if(nodo->der != NULL){
-                rank(x, nodo->der);
+                return rank(x, nodo->der);
             }else{
                 return nodo->contadorMenor + 1;
             }
         }else if(x < nodo->info){
             if(nodo->izq != NULL){
-                rank(x, nodo->izq);
+                return rank(x, nodo->izq);
             }else{
                 return nodo->contadorMenor + 1;
             }
         }else{
-            return nodo->contadorMenor;
+            return nodo->contadorMenor + 1;
         }
+    }else{
+        return -1;
     }
+    
 }
 
 
@@ -158,20 +170,18 @@ int main(){
     
     RankedABB a;
 
-    /*a.insert(101);
+    a.insert(101);
     a.insert(567);
     a.insert(102);
     a.insert(1);
     a.insert(2);
     a.insert(6);
     a.insert(5);
-    a.insert(13);
-    a.insert(9);
     a.insert(8);
     a.insert(7);
-    a.insert(5);*/
+    a.insert(5);
 
-    a.insert(25);
+    /*a.insert(25);
     a.insert(50);
     a.insert(30);
     a.insert(28);
@@ -180,15 +190,14 @@ int main(){
     a.insert(27);
     a.insert(45);
     a.insert(55);
-    a.insert(75);
+    a.insert(75);*/
     //a.mostrar();
 
     a.setContador(a.getRoot());
-    cout<<endl;
     a.setContadorMenor(a.getRoot());
 
     cout<< a.find(567)<<endl;
-    cout<< a.rank(10, a.getRoot());
+    cout<< a.rank(566);
 
     return 0;
 }
